@@ -34,7 +34,7 @@ class CreateEventDialog(QDialog):
         self.date_input = QDateEdit()
         self.date_input.setDate(QDate.currentDate())
         self.date_input.setMinimumDate(QDate.currentDate())
-        self.date_input.setDisplayFormat("dd-MM-yyyy")
+        self.date_input.setDisplayFormat("dd/MM/yyyy")
         self.date_input.setCalendarPopup(True)
 
         self.time_label = QLabel("Event Start Time:")

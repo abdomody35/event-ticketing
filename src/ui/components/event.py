@@ -104,7 +104,7 @@ class EventWidget(QWidget):
         details_layout = QHBoxLayout()
 
         left_col = QVBoxLayout()
-        date_label = QLabel(f"📅 {self.event['date']}")
+        date_label = QLabel(f"📅 {self.event['date'].strftime("%d/%m/%Y")}")
         time_label = QLabel(f"🕒 {self.event['start_time']}")
         left_col.addWidget(date_label)
         left_col.addWidget(time_label)
