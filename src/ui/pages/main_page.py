@@ -6,8 +6,9 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QDialog,
     QPushButton,
+    QLineEdit,
 )
-from PyQt6.QtCore import Qt, QDate, QTime
+from PyQt6.QtCore import Qt, QDate, QTime, QTimer
 from ...models.event import Event
 from ...models.category import Category
 from ...models.venue import Venue
@@ -21,6 +22,10 @@ class MainPage(QWidget):
         super().__init__(parent)
         self.parent = parent
         self.current_filters = {}
+        self.search_query = ""
+        self.search_timer = QTimer()
+        self.search_timer.setSingleShot(True)
+        self.search_timer.timeout.connect(self.load_events)
         self.setup_ui()
 
     def setup_ui(self):
@@ -36,6 +41,15 @@ class MainPage(QWidget):
         filter_buttons_container = QWidget()
         filter_buttons_layout = QHBoxLayout()
         filter_buttons_layout.setSpacing(10)
+
+        self.search_input = QLineEdit()
+        self.search_input.setPlaceholderText("Search by event name")
+        self.search_input.setMinimumWidth(300)
+        search_layout = QHBoxLayout()
+        search_layout.addWidget(QLabel("Search:"))
+        self.search_input.textChanged.connect(self.on_search_changed)
+        search_layout.addWidget(self.search_input)
+        filter_buttons_layout.addLayout(search_layout)
         
         self.filter_button = QPushButton("Filter Events")
         self.filter_button.setMinimumWidth(120)
@@ -67,6 +81,11 @@ class MainPage(QWidget):
         self.setLayout(layout)
         self.update_active_filters_label()
         self.load_events()
+
+    def on_search_changed(self, text):
+        """Debounce search input to avoid too frequent updates"""
+        self.search_query = text
+        self.search_timer.start(300)
 
     def remove_filters(self):
         """Removes all active filters"""
@@ -162,6 +181,11 @@ class MainPage(QWidget):
         filtered_events = []
 
         for event in events:
+            if self.search_query:
+                search_query = self.search_query.lower()
+                if search_query not in event["name"].lower():
+                    continue
+                
             if (
                 self.current_filters.get("category_id")
                 and event["category_id"] != self.current_filters["category_id"]
