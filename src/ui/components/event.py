@@ -40,6 +40,7 @@ class EventWidget(QWidget):
 
         card = QFrame()
         card.setStyleSheet(CARD)
+        card.setObjectName("MainCard")
         card_layout = QVBoxLayout()
         card.setLayout(card_layout)
 
@@ -77,11 +78,11 @@ class EventWidget(QWidget):
 
         if self.mode == "edit" and self.type == "event":
             button_layout = QHBoxLayout()
-            edit_button = QPushButton("Edit")
+            edit_button = QPushButton("📝 Edit")
             edit_button.setStyleSheet(BUTTON_PRIMARY)
             edit_button.clicked.connect(self.edit_event)
 
-            delete_button = QPushButton("Delete")
+            delete_button = QPushButton("🗑️ Delete")
             delete_button.setStyleSheet(BUTTON_DANGER)
             delete_button.clicked.connect(self.delete_event)
 

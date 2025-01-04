@@ -5,6 +5,7 @@ BUTTON_PRIMARY = """
             border-radius: 4px;
             padding: 6px 12px;
             font-weight: bold;
+            height: 25px;
         }
         QPushButton:hover {
             background-color: #1976D2;
@@ -18,6 +19,7 @@ BUTTON_DANGER = """
             border-radius: 4px;
             padding: 6px 12px;
             font-weight: bold;
+            height: 25px;
         }
         QPushButton:hover {
             background-color: #d32f2f;
