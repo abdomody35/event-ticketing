@@ -1,0 +1,45 @@
+CREATE TABLE IF NOT EXISTS categories (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(10)
+);
+
+CREATE TABLE IF NOT EXISTS venues (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(100),
+	address VARCHAR(50),
+	seats INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS users (
+	id SERIAL PRIMARY KEY,
+	username VARCHAR(50) UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS events (
+	id SERIAL PRIMARY KEY,
+	venue_id SMALLINT,
+	category_id SMALLINT,
+	date DATE,
+	name VARCHAR(200),
+	start_time TIME,
+	seller_id INTEGER,
+	number_of_tickets BIGINT,
+	price DECIMAL(8, 2),
+	number_of_bookings BIGINT DEFAULT 0,
+	listing_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (venue_id) REFERENCES venues(id) ON DELETE CASCADE,
+	FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
+	FOREIGN KEY (seller_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS sales (
+	id SERIAL PRIMARY KEY,
+	event_id INTEGER,
+	buyer_id INTEGER,
+	quantity_sold BIGINT,
+	price_paid DECIMAL(20, 2),
+	sale_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (buyer_id) REFERENCES users(id) ON DELETE CASCADE,
+	FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+);
