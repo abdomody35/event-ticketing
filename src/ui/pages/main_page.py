@@ -32,7 +32,7 @@ class MainPage(QWidget):
         """Sets up the main page UI"""
         layout = QVBoxLayout()
 
-        self.welcome_label = QLabel("Welcome to Ticket Marketplace")
+        self.welcome_label = QLabel("Welcome to Event Ease Marketplace")
         self.welcome_label.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.welcome_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         self.welcome_label.setStyleSheet("font-size: 24px; margin: 25px;")
@@ -50,16 +50,16 @@ class MainPage(QWidget):
         self.search_input.textChanged.connect(self.on_search_changed)
         search_layout.addWidget(self.search_input)
         filter_buttons_layout.addLayout(search_layout)
-        
+
         self.filter_button = QPushButton("Filter Events")
         self.filter_button.setMinimumWidth(120)
         self.filter_button.clicked.connect(self.show_filter_dialog)
-        
+
         self.remove_filters_button = QPushButton("Remove Filters")
         self.remove_filters_button.setMinimumWidth(120)
         self.remove_filters_button.clicked.connect(self.remove_filters)
         self.remove_filters_button.setVisible(False)
-        
+
         filter_buttons_layout.addWidget(self.filter_button)
         filter_buttons_layout.addWidget(self.remove_filters_button)
         filter_buttons_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -113,23 +113,37 @@ class MainPage(QWidget):
                 active_filters.append(f"Venue: {venue}")
 
         if self.current_filters.get("start_date"):
-            date_range = f"Date: {self.current_filters['start_date'].toString('dd/MM/yyyy')}"
+            date_range = (
+                f"Date: {self.current_filters['start_date'].toString('dd/MM/yyyy')}"
+            )
             if self.current_filters.get("end_date"):
-                date_range += f" - {self.current_filters['end_date'].toString('dd/MM/yyyy')}"
+                date_range += (
+                    f" - {self.current_filters['end_date'].toString('dd/MM/yyyy')}"
+                )
             active_filters.append(date_range)
 
         if self.current_filters.get("start_time"):
             time_range = ""
-            if not self.current_filters.get("start_time").toString('HH:mm') == "00:00":
-                time_range = f"Time: {self.current_filters['start_time'].toString('HH:mm')}"
+            if not self.current_filters.get("start_time").toString("HH:mm") == "00:00":
+                time_range = (
+                    f"Time: {self.current_filters['start_time'].toString('HH:mm')}"
+                )
             if self.current_filters.get("end_time"):
                 if time_range:
-                    time_range += f" - {self.current_filters['end_time'].toString('HH:mm')}"
-                elif not self.current_filters.get("end_time").toString('HH:mm') == "23:59":
+                    time_range += (
+                        f" - {self.current_filters['end_time'].toString('HH:mm')}"
+                    )
+                elif (
+                    not self.current_filters.get("end_time").toString("HH:mm")
+                    == "23:59"
+                ):
                     time_range = f"Time: 00:00 - {self.current_filters['end_time'].toString('HH:mm')}"
             active_filters.append(time_range) if time_range else ()
 
-        if self.current_filters.get("min_price") is not None or self.current_filters.get("max_price") is not None:
+        if (
+            self.current_filters.get("min_price") is not None
+            or self.current_filters.get("max_price") is not None
+        ):
             price_range = "Price: "
             if self.current_filters.get("min_price") is not None:
                 price_range += f"${self.current_filters['min_price']}"
@@ -185,7 +199,7 @@ class MainPage(QWidget):
                 search_query = self.search_query.lower()
                 if search_query not in event["name"].lower():
                     continue
-                
+
             if (
                 self.current_filters.get("category_id")
                 and event["category_id"] != self.current_filters["category_id"]
@@ -235,30 +249,27 @@ class MainPage(QWidget):
 
             filtered_events.append(event)
 
-        if not filtered_events:
-            self.events_layout.addWidget(
-                QLabel("No events found"), alignment=Qt.AlignmentFlag.AlignCenter
-            )
-            return
-
         grid_layout = QGridLayout()
         grid_layout.setSpacing(24)
         grid_layout.setAlignment(
             Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter
         )
 
-        widget_count = self.parent.width() / 650
-        if widget_count > 2.92:
-            widget_count = 3
+        if not filtered_events:
+            grid_layout.addWidget(QLabel("No Events Found"), 0, 0)
         else:
-            widget_count = int(widget_count)
-        self.num_columns = max(1, widget_count)
+            widget_count = self.parent.width() / 650
+            if widget_count > 2.92:
+                widget_count = 3
+            else:
+                widget_count = int(widget_count)
+            self.num_columns = max(1, widget_count)
 
-        for index, event in enumerate(filtered_events):
-            row = index // self.num_columns
-            col = index % self.num_columns
-            event_widget = EventWidget(event, mode="view", parent=self)
-            grid_layout.addWidget(event_widget, row, col)
+            for index, event in enumerate(filtered_events):
+                row = index // self.num_columns
+                col = index % self.num_columns
+                event_widget = EventWidget(event, mode="view", parent=self)
+                grid_layout.addWidget(event_widget, row, col)
 
         events_scroll_widget = ScrollWidget(grid_layout, self)
         self.events_layout.addWidget(events_scroll_widget)

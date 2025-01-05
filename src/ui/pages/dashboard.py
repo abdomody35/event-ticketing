@@ -76,9 +76,14 @@ class Dashboard(QWidget):
         events_layout = QVBoxLayout()
         events_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        for event in events:
-            event_widget = EventWidget(event, mode="edit", parent=self)
-            events_layout.addWidget(event_widget)
+        if not events:
+            no_events_label = QLabel("You didn't create any event")
+            no_events_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            events_layout.addWidget(no_events_label)
+        else:
+            for event in events:
+                event_widget = EventWidget(event, mode="edit", parent=self)
+                events_layout.addWidget(event_widget)
 
         events_scroll_Widget = ScrollWidget(events_layout, self)
         self.events_layout.addWidget(events_scroll_Widget)
@@ -91,9 +96,14 @@ class Dashboard(QWidget):
         purchases_layout = QVBoxLayout()
         purchases_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        for purchase in purchases:
-            purchase_widget = EventWidget(purchase, type="purchase", parent=self)
-            purchases_layout.addWidget(purchase_widget)
+        if not purchases:
+            no_purchases_label = QLabel("You didn't buy any ticket")
+            no_purchases_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            purchases_layout.addWidget(no_purchases_label)
+        else:
+            for purchase in purchases:
+                purchase_widget = EventWidget(purchase, type="purchase", parent=self)
+                purchases_layout.addWidget(purchase_widget)
 
         purchases_scroll_widget = ScrollWidget(purchases_layout, self)
         self.purchases_layout.addWidget(purchases_scroll_widget)

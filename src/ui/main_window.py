@@ -14,7 +14,7 @@ class MainWindow(QMainWindow):
 
     def setup_ui(self):
         """Sets up the main window UI"""
-        self.setWindowTitle("Ticket Marketplace")
+        self.setWindowTitle("Event Ease")
         self.setMinimumSize(900, 750)
         self.setStyleSheet("background-color: skyblue; color: black; font: bold 20px")
         self.setup_toolbar()
